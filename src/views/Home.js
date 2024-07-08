@@ -21,6 +21,8 @@ import {
 } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import PaymentTableModal from "../components/UI/PaymentTableModal";
@@ -312,6 +314,43 @@ const Home = () => {
     }
   };
 
+
+  const handleGenerateInvoice = (record) => {
+    // Create a new jsPDF instance
+    const doc = new jsPDF();
+    console.log(record);
+
+    // Add content to the invoice
+    doc.setFontSize(12);
+    doc.text('Invoice', 20, 10);
+
+    // Client Information
+    doc.text(`Client: ${record.month}`, 20, 20);
+    // doc.text(`Address: ${record.clientAddress}`, 20, 30);
+
+    // Invoice Details Table
+    const tableRows = record.items.map((item, index) => [
+      index + 1,
+      item.description,
+      item.quantity,
+      item.unitPrice,
+      item.totalPrice,
+    ]);
+
+    doc.autoTable({
+      startY: 50,
+      head: [['#', 'Description', 'Quantity', 'Unit Price', 'Total Price']],
+      body: tableRows,
+    });
+
+    // Total Amount
+    const totalAmount = record.items.reduce((acc, item) => acc + item.totalPrice, 0);
+    doc.text(`Total Amount: ${totalAmount}`, 150, doc.lastAutoTable.finalY + 10);
+
+    // Save the PDF with a specific name
+    doc.save('invoice.pdf');
+  };
+
   // main form
   const columns = [
     {
@@ -391,6 +430,11 @@ const Home = () => {
             >
               Delete
             </Typography.Link>
+            <Button
+            disabled={editingKey !== ""} onClick={handleGenerateInvoice}
+          >
+            Print
+          </Button>
           </Space>
         );
       }
