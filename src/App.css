@@ -1,0 +1,98 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: #fff;
+}
+.gutter-box {
+  padding: 8px 0;
+}
+.active-link {
+  color: #1890ff; /* Change this to the desired active color */
+}
+.demo-logo-vertical {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #fff;
+  text-align: center;
+  line-height: 32px;
+}
+#components-form-demo-normal-login .login-form {
+  max-width: 300px;
+}
+#components-form-demo-normal-login .login-form-forgot {
+  float: right;
+}
+#components-form-demo-normal-login .ant-col-rtl .login-form-forgot {
+  float: left;
+}
+#components-form-demo-normal-login .login-form-button {
+  width: 100%;
+}
+.editable-row .ant-form-item-explain {
+  position: absolute;
+  top: 100%;
+  font-size: 12px;
+}
+
+.logout-button button {
+  width: calc(100% - 5px);
+}
+
+@media screen and (max-width: 768px) {
+  .nav-responsive,
+  .ant-layout-header {
+    display: none;
+  }
+  th {
+    visibility: hidden;
+    height: 0px;
+    display: none;
+  }
+  table {
+    border: 0;
+  }
+
+  table thead {
+    border: none;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+  }
+
+  table tr {
+    display: block;
+    margin-bottom: 0.625em;
+    border: 0px;
+  }
+
+  table td {
+    display: block;
+  }
+
+  table td span::before {
+    content: attr(data-label);
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-right: 1rem;
+  }
+  .ant-table-body td span {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+  }
+  .ant-table-body td:first-child {
+    /* justify-content: flex-start; */
+    background: #fafbfc;
+  }
+
+  table td:last-child {
+    border-bottom: 0;
+  }
+}
