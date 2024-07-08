@@ -6,19 +6,21 @@ import {
 import {
   Button,
   Col,
+  DatePicker,
   Form,
   Input,
   InputNumber,
+  message,
   Popconfirm,
   Row,
   Select,
   Space,
   Table,
   Tag,
-  Typography,
-  message
+  Typography
 } from "antd";
 import axios from "axios";
+import dayjs from "dayjs";
 import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import PaymentTableModal from "../components/UI/PaymentTableModal";
@@ -36,16 +38,23 @@ const EditableCell = ({
   ...restProps
 }) => {
   const inputNode =
-    inputType === "number" ? (
+    inputType === 'number' ? (
       <InputNumber />
-    ) : dataIndex === "status" ? (
-      <Select>
-        <Option value="Connect">Connect</Option>
-        <Option value="Disconnect">Disconnect</Option>
-      </Select>
+    ) : dataIndex === 'payingDate'  ? (
+      <DatePicker format="YYYY-MM-DD HH:mm:ss" />
     ) : (
       <Input />
     );
+
+  const getInitialValue = () => {
+    if (dataIndex === 'payingDate') {
+      return record[dataIndex] ? dayjs(record[dataIndex]) : null;
+    }
+    if (dataIndex === 'month' || dataIndex === 'startDate') {
+      return record[dataIndex] ? dayjs(record[dataIndex]) : null;
+    }
+    return record[dataIndex];
+  };
 
   return (
     <td {...restProps}>
@@ -54,6 +63,7 @@ const EditableCell = ({
           name={dataIndex}
           style={{ margin: 0 }}
           rules={[{ required: true, message: `Please Input ${title}!` }]}
+          initialValue={getInitialValue()}
         >
           {inputNode}
         </Form.Item>
@@ -229,11 +239,10 @@ const Home = () => {
   });
   const edit = (record) => {
     form.setFieldsValue({
-      name: record.name,
-      macAddress: record.macAddress,
-      device: record.device,
-      roomNo: record.roomNo, // corrected key name
-      status: record.status
+      month: record.month,
+      startDate: record.startDate,
+      payingDate: record.payingDate,
+      paymentStatus: record.paymentStatus
     });
     setEditingKey(record.key);
   };
@@ -324,11 +333,17 @@ const Home = () => {
       ...getColumnSearchProps("payingDate")
     },
     {
+      title: "Total Amount",
+      dataIndex: "totalPrice",
+      editable: false,
+      ...getColumnSearchProps("totalPrice")
+    },
+    {
       title: "Payment Status",
       dataIndex: "paymentStatus",
-      key: "Payment Status",
+      key: "paymentStatus",
       editable: false,
-      ...getColumnSearchProps("Payment Status"),
+      ...getColumnSearchProps("paymentStatus"),
       render: (_, { paymentStatus }) => {
         let color = paymentStatus.length > 5 ? "red" : "green";
         return (
@@ -441,49 +456,7 @@ const Home = () => {
     form.resetFields();
   };
 
-  const calculatePaymentCounts = (clients) => {
-    const currentDate = new Date();
-    const currentMonth = currentDate.getMonth(); // Month is zero-based
 
-    // Filter out clients with "deactive" status
-    const activeClients = clients.filter(
-      (client) => client.status !== "Disconnect"
-    );
-    setAllClientsCount(activeClients);
-
-    const paidClientsCount = activeClients.filter((client) => {
-      // Check if the client's payment status is 'paid'
-      return (
-        client.paymentStatus === "paid" &&
-        client.paymentDetails.some((payment) => {
-          const paymentMonths = payment.paymentMonth.map(
-            (month) => new Date(month)
-          );
-          return paymentMonths.some(
-            (month) => month.getMonth() === currentMonth
-          );
-        })
-      );
-    }).length;
-
-    const pendingClientsCount = activeClients.filter((client) => {
-      return (
-        client.paymentStatus === "pending" &&
-        !client.paymentDetails.some((payment) => {
-          const paymentMonths = payment.paymentMonth.map(
-            (month) => new Date(month)
-          );
-          return paymentMonths.some(
-            (month) => month.getMonth() === currentMonth
-          );
-        })
-      );
-    }).length;
-
-    // Update state with the counts
-    setPaidClientsCount(paidClientsCount);
-    setPendingClientsCount(pendingClientsCount);
-  };
 
   useEffect(() => {
     const fetchPendingPayments = async () => {
@@ -525,7 +498,6 @@ const Home = () => {
         const response = await axios.get(`${api}/user/all-client`);
         // console.log(response.data.data);
         setClient(response.data.data);
-        calculatePaymentCounts(response.data.data);
       } catch (error) {
         console.log(error);
       }
@@ -533,6 +505,11 @@ const Home = () => {
 
     fetchData(); // Call the async function immediately
   }, [loading, form]);
+
+  const disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < dayjs().endOf("day");
+  };
 
   return (
     <>
@@ -549,7 +526,6 @@ const Home = () => {
             Logout
           </Button>
         </Col>
-      
 
         <Col span={24}>
           <Form name="dynamic_form_nest_item" onFinish={onFinish} form={form}>
@@ -616,7 +592,7 @@ const Home = () => {
                           }
                         ]}
                       >
-                        <Input placeholder="Month" />
+                        <DatePicker picker="month" />
                       </Form.Item>
                       <Form.Item
                         style={{ width: "100%" }}
@@ -630,7 +606,7 @@ const Home = () => {
                           }
                         ]}
                       >
-                        <Input placeholder="Start Date" />
+                        <DatePicker onChange={onChange} />
                       </Form.Item>
                       <MinusCircleOutlined onClick={() => remove(name)} />
                     </Space>

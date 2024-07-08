@@ -1,7 +1,6 @@
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   Button,
-  DatePicker,
   Descriptions,
   Form,
   Input,
@@ -14,7 +13,6 @@ import {
   message
 } from "antd";
 import axios from "axios";
-import dayjs from "dayjs";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -155,22 +153,22 @@ const PaymentTableModal = ({
 
   const columns = [
     {
-      title: "paymentDate",
-      dataIndex: "paymentDate"
+      title: "productName",
+      dataIndex: "productName"
     },
     {
-      title: "paymentAmount",
-      dataIndex: "paymentAmount",
+      title: "weightAmount",
+      dataIndex: "weightAmount",
       editable: true
     },
     {
-      title: "paymentMonth",
-      dataIndex: "paymentMonth",
+      title: "weightType",
+      dataIndex: "weightType",
       editable: true
     },
     {
-      title: "paymentStatus",
-      dataIndex: "paymentStatus",
+      title: "price",
+      dataIndex: "price",
       editable: true
     },
     {
@@ -236,36 +234,35 @@ const PaymentTableModal = ({
 
   const onFinish = async (values, userId) => {
     try {
-      values.users = values.users.map((user) => {
-        const formattedMonths = user.paymentMonth.map((month) =>
-          dayjs(month).format("YYYY-MM")
-        );
-        return {
-          ...user,
-          paymentDate: dayjs(user.paymentDate).format("YYYY-MM-DD"),
-          paymentMonth: formattedMonths
-        };
-      });
+      console.log(userId, values.users);
+      // return;
+      // values.users = values.users.map((user) => {
+      //   const formattedMonths = user.paymentMonth.map((month) =>
+      //     dayjs(month).format("YYYY-MM")
+      //   );
+      //   return {
+      //     ...user,
+      //     paymentDate: dayjs(user.paymentDate).format("YYYY-MM-DD"),
+      //     paymentMonth: formattedMonths
+      //   };
+      // });
 
       // Iterate through each user and send the payment details
+
       for (const user of values.users) {
         // Extract user details
-        const { paymentDate, paymentMonth, paymentAmount, paymentStatus } =
-          user;
+        const { productName, weightAmount, weightType, price } = user;
 
         // Use userId passed from the form
         const clientId = userId;
         // Perform Axios POST request to send payment details
-        const paymentResponse = await axios.post(
-          `${api}/user/add-client-payment-history`,
-          {
-            clientId,
-            paymentDate,
-            paymentMonth,
-            paymentAmount,
-            paymentStatus
-          }
-        );
+        const paymentResponse = await axios.post(`${api}/user/add-product`, {
+          clientId,
+          productName,
+          weightAmount,
+          weightType,
+          price
+        });
 
         // Log response
         console.log("Payment details response:", paymentResponse.data);
@@ -288,6 +285,21 @@ const PaymentTableModal = ({
       console.log(error);
     }
   };
+
+  const options = [...Array(1000).keys()].map((index) => ({
+    value: String(index + 1),
+    label: String(index + 1)
+  }));
+
+  const paymentStatusOptions = [
+    { value: "hali", label: "hali" },
+    { value: "doz", label: "doz" },
+    { value: "pcs", label: "Pcs" },
+    { value: "bottle", label: "Bottle" },
+    { value: "pack", label: "Pack" },
+    { value: "kg", label: "KG" },
+    { value: "gram", label: "Gram" }
+  ];
 
   return (
     <>
@@ -351,26 +363,26 @@ const PaymentTableModal = ({
                         <Form.Item
                           style={{ width: "100%" }}
                           {...restField}
-                          name={[name, "paymentDate"]}
-                          fieldKey={[name, "paymentDate"]}
+                          name={[name, "productName"]}
+                          fieldKey={[name, "productName"]}
                           rules={[
                             {
                               required: true,
-                              message: "Missing paymentDate"
+                              message: "Missing product name"
                             }
                           ]}
                         >
-                          <DatePicker
+                          <Input
                             style={{ width: "100%" }}
-                            placeholder="Payment Date"
+                            placeholder="Product Name"
                           />
                         </Form.Item>
 
                         <Form.Item
                           style={{ width: "100%" }}
                           {...restField}
-                          name={[name, "paymentMonth"]}
-                          fieldKey={[name, "paymentMonth"]}
+                          name={[name, "weightAmount"]}
+                          fieldKey={[name, "weightAmount"]}
                           rules={[
                             {
                               required: true,
@@ -378,19 +390,24 @@ const PaymentTableModal = ({
                             }
                           ]}
                         >
-                          <DatePicker
-                            multiple
-                            picker="month"
-                            onChange={onChange}
-                            placeholder="Select payment month"
+                          <Select
+                            showSearch
+                            placeholder="Select a device"
+                            filterOption={(input, option) =>
+                              (option?.label ?? "")
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
+                            options={options}
+                            style={{ width: "100%" }}
                           />
                         </Form.Item>
 
                         <Form.Item
                           style={{ width: "100%" }}
                           {...restField}
-                          name={[name, "paymentAmount"]}
-                          fieldKey={[name, "paymentAmount"]}
+                          name={[name, "weightType"]}
+                          fieldKey={[name, "weightType"]}
                           rules={[
                             {
                               required: true,
@@ -398,14 +415,26 @@ const PaymentTableModal = ({
                             }
                           ]}
                         >
-                          <Input placeholder="Payment Amount" />
+                          {/* <Input placeholder="Payment Amount" /> */}
+
+                          <Select
+                            showSearch
+                            placeholder="Select a payment Status"
+                            filterOption={(input, option) =>
+                              (option?.label ?? "")
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                            }
+                            options={paymentStatusOptions}
+                            style={{ width: "100%" }}
+                          />
                         </Form.Item>
 
                         <Form.Item
                           style={{ width: "100%", flex: "1 1 100%" }}
                           {...restField}
-                          name={[name, "paymentStatus"]}
-                          fieldKey={[name, "paymentStatus"]}
+                          name={[name, "price"]}
+                          fieldKey={[name, "price"]}
                           rules={[
                             {
                               required: true,
@@ -413,12 +442,7 @@ const PaymentTableModal = ({
                             }
                           ]}
                         >
-                          <Select placeholder="Select a payment Status">
-                            <Select.Option value="paid">Paid</Select.Option>
-                            <Select.Option value="pending">
-                              Pending
-                            </Select.Option>
-                          </Select>
+                          <Input placeholder="Price" />
                         </Form.Item>
 
                         <MinusCircleOutlined onClick={() => remove(name)} />
