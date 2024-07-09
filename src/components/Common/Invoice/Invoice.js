@@ -24,6 +24,7 @@ const Invoice = ({ invoiceData }) => {
           padding: '10px', 
           paddingLeft: '30px',
           paddingRight: '30px',
+          paddingBottom: '50px',
           maxWidth: '80mm', 
           margin: 'auto', 
           border: '1px solid #ccc',
