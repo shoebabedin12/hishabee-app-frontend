@@ -20,10 +20,10 @@ const Invoice = ({ invoiceData }) => {
         ref={printRef} 
         style={{ 
           fontFamily: 'Arial, sans-serif', 
-          fontSize: '10px', 
+          fontSize: '8px', 
           padding: '10px', 
-          paddingLeft: '20px',
-          paddingRight: '20px',
+          paddingLeft: '30px',
+          paddingRight: '30px',
           maxWidth: '80mm', 
           margin: 'auto', 
           border: '1px solid #ccc',
