@@ -378,6 +378,12 @@ const Home = () => {
       ...getColumnSearchProps("totalPrice")
     },
     {
+      title: "Total Item",
+      dataIndex: "totalItem",
+      editable: false,
+      ...getColumnSearchProps("totalItem")
+    },
+    {
       title: "Payment Status",
       dataIndex: "paymentStatus",
       key: "paymentStatus",
