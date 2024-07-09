@@ -21,10 +21,10 @@ import {
 } from "antd";
 import axios from "axios";
 import dayjs from "dayjs";
-import { jsPDF } from 'jspdf';
-import 'jspdf-autotable';
+import "jspdf-autotable";
 import React, { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
+import Invoice from "../components/Common/Invoice/Invoice";
 import PaymentTableModal from "../components/UI/PaymentTableModal";
 
 const { Option } = Select;
@@ -40,19 +40,19 @@ const EditableCell = ({
   ...restProps
 }) => {
   const inputNode =
-    inputType === 'number' ? (
+    inputType === "number" ? (
       <InputNumber />
-    ) : dataIndex === 'payingDate'  ? (
+    ) : dataIndex === "payingDate" ? (
       <DatePicker format="YYYY-MM-DD HH:mm:ss" />
     ) : (
       <Input />
     );
 
   const getInitialValue = () => {
-    if (dataIndex === 'payingDate') {
+    if (dataIndex === "payingDate") {
       return record[dataIndex] ? dayjs(record[dataIndex]) : null;
     }
-    if (dataIndex === 'month' || dataIndex === 'startDate') {
+    if (dataIndex === "month" || dataIndex === "startDate") {
       return record[dataIndex] ? dayjs(record[dataIndex]) : null;
     }
     return record[dataIndex];
@@ -101,6 +101,7 @@ const Home = () => {
   const [pendingClientsCount, setPendingClientsCount] = useState(0);
   const [paymentPendingData, setPaymentPendingData] = useState([]);
   const [paymentNeededData, setPaymentNeededData] = useState([]);
+  const [invoiceData, setInvoiceData] = useState(null);
   const [selectedUserPaymentDetails, setSelectedUserPaymentDetails] = useState(
     []
   );
@@ -314,41 +315,9 @@ const Home = () => {
     }
   };
 
-
   const handleGenerateInvoice = (record) => {
-    // Create a new jsPDF instance
-    const doc = new jsPDF();
     console.log(record);
-
-    // Add content to the invoice
-    doc.setFontSize(12);
-    doc.text('Invoice', 20, 10);
-
-    // Client Information
-    doc.text(`Client: ${record.month}`, 20, 20);
-    // doc.text(`Address: ${record.clientAddress}`, 20, 30);
-
-    // Invoice Details Table
-    const tableRows = record.items.map((item, index) => [
-      index + 1,
-      item.description,
-      item.quantity,
-      item.unitPrice,
-      item.totalPrice,
-    ]);
-
-    doc.autoTable({
-      startY: 50,
-      head: [['#', 'Description', 'Quantity', 'Unit Price', 'Total Price']],
-      body: tableRows,
-    });
-
-    // Total Amount
-    const totalAmount = record.items.reduce((acc, item) => acc + item.totalPrice, 0);
-    doc.text(`Total Amount: ${totalAmount}`, 150, doc.lastAutoTable.finalY + 10);
-
-    // Save the PDF with a specific name
-    doc.save('invoice.pdf');
+    setInvoiceData(record);
   };
 
   // main form
@@ -437,10 +406,11 @@ const Home = () => {
               Delete
             </Typography.Link>
             <Button
-            disabled={editingKey !== ""} onClick={handleGenerateInvoice}
-          >
-            Print
-          </Button>
+              disabled={editingKey !== ""}
+              onClick={() => handleGenerateInvoice(record)}
+            >
+              Print
+            </Button>
           </Space>
         );
       }
@@ -506,8 +476,6 @@ const Home = () => {
     form.resetFields();
   };
 
-
-
   useEffect(() => {
     const fetchPendingPayments = async () => {
       try {
@@ -563,6 +531,7 @@ const Home = () => {
 
   return (
     <>
+      {invoiceData && <Invoice invoiceData={invoiceData} />}
       {contextHolder}
       <Row gutter={16} wrap align="middle">
         <Col className="gutter-row" span={6} lg={6} md={6} sm={12} xs={24}>
