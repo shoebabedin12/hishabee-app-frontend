@@ -20,7 +20,7 @@ const Invoice = ({ invoiceData }) => {
         ref={printRef} 
         style={{ 
           fontFamily: 'Arial, sans-serif', 
-          fontSize: '8px', 
+          fontSize: '10px', 
           padding: '10px', 
           paddingLeft: '30px',
           paddingRight: '30px',
@@ -35,27 +35,27 @@ const Invoice = ({ invoiceData }) => {
         <p><strong>Month:</strong> {new Date(month).toLocaleDateString()}</p>
         <p><strong>Start Date:</strong> {new Date(startDate).toLocaleDateString()}</p>
         <p><strong>Paying Date:</strong> {payingDate ? new Date(payingDate).toLocaleDateString() : 'Pending'}</p>
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px', fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>
           <thead>
-            <tr style={{ borderBottom: '1px solid #ccc' }}>
-              <th style={{ padding: '5px', textAlign: 'left', borderBottom: '1px solid #ccc' }}>Product</th>
-              <th style={{ padding: '5px', textAlign: 'right', borderBottom: '1px solid #ccc' }}>Qty</th>
-              <th style={{ padding: '5px', textAlign: 'right', borderBottom: '1px solid #ccc' }}>Type</th>
-              <th style={{ padding: '5px', textAlign: 'right', borderBottom: '1px solid #ccc' }}>Price</th>
+            <tr style={{ borderBottom: '1px solid #ccc', fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>
+              <th style={{ padding: '5px', textAlign: 'left', borderBottom: '1px solid #ccc', fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>Product</th>
+              <th style={{ padding: '5px', textAlign: 'right', borderBottom: '1px solid #ccc', fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>Qty</th>
+              <th style={{ padding: '5px', textAlign: 'right', borderBottom: '1px solid #ccc', fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>Type</th>
+              <th style={{ padding: '5px', textAlign: 'right', borderBottom: '1px solid #ccc', fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>Price</th>
             </tr>
           </thead>
           <tbody>
             {paymentDetails.map((detail, index) => (
-              <tr key={index} style={{ borderBottom: '1px solid #ccc' }}>
-                <td style={{ padding: '5px', textAlign: 'left' }}>{detail.productName}</td>
-                <td style={{ padding: '5px', textAlign: 'right' }}>{detail.weightAmount}</td>
-                <td style={{ padding: '5px', textAlign: 'right' }}>{detail.weightType}</td>
-                <td style={{ padding: '5px', textAlign: 'right' }}>{detail.price}</td>
+              <tr key={index} style={{ borderBottom: '1px solid #ccc', fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>
+                <td style={{ padding: '5px', textAlign: 'left',fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>{detail.productName}</td>
+                <td style={{ padding: '5px', textAlign: 'right',fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>{detail.weightAmount}</td>
+                <td style={{ padding: '5px', textAlign: 'right',fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>{detail.weightType}</td>
+                <td style={{ padding: '5px', textAlign: 'right',fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>{detail.price}</td>
               </tr>
             ))}
-            <tr style={{ borderTop: '1px solid #000' }}>
-              <td colSpan="3" style={{ padding: '5px', textAlign: 'left', fontWeight: 'bold' }}>Total</td>
-              <td style={{ padding: '5px', textAlign: 'right', fontWeight: 'bold' }}>{totalPrice}</td>
+            <tr style={{ borderTop: '1px solid #000', fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>
+              <td colSpan="3" style={{ padding: '5px', textAlign: 'left', fontWeight: 'bold',fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>Total</td>
+              <td style={{ padding: '5px', textAlign: 'right', fontWeight: 'bold',fontFamily: 'Arial, sans-serif', fontSize: '10px' }}>{totalPrice}</td>
             </tr>
           </tbody>
         </table>
