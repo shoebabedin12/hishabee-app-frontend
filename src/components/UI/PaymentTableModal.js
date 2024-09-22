@@ -292,13 +292,14 @@ const PaymentTableModal = ({
   }));
 
   const paymentStatusOptions = [
-    { value: "hali", label: "hali" },
-    { value: "doz", label: "doz" },
+    { value: "hali", label: "Hali" },
+    { value: "doz", label: "DOZ" },
     { value: "pcs", label: "Pcs" },
     { value: "bottle", label: "Bottle" },
     { value: "pack", label: "Pack" },
     { value: "kg", label: "KG" },
-    { value: "gram", label: "Gram" }
+    { value: "gram", label: "Gram" },
+    { value: "ltr", label: "Ltr" }
   ];
 
   return (
